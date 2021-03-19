@@ -104,3 +104,41 @@ function yesNo(input){
 function chars(input){
   return true; // default validation only
 }
+
+function searchByCriteria(people){
+  let userSearchCriteria = prompt('What do you want to search for?: Gender? ').toLowerCase();
+  switch (userSearchCriteria){
+    case 'gender':
+      let genderSearchCriteria = prompt('male or female: ').toLowerCase();
+      let genderList = sortByGender(genderSearchCriteria, people);
+      outputTheNames(genderList);
+      break;
+  }
+}
+
+searchByCriteria(data);
+
+function sortByGender(genderSearchCriteria, people){
+  switch (genderSearchCriteria){
+    case 'male':
+      let maleBlock = people.filter(function(person){
+        return (person.gender === 'male');
+      });
+      return maleBlock;
+    case 'female':
+      let femaleBlock = people.filter(function(person){
+        return (person.gender === 'female');
+      });
+      return femaleBlock;
+  }
+}
+
+function outputTheNames(people){
+  for (let i = 0; i < people.length; i++){
+    if (i<people.length){
+      let firstName = people[i].firstName;
+      let lastName = people[i].lastName;
+      console.log(firstName + " " + lastName);
+    }
+  }
+}
