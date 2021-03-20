@@ -105,19 +105,78 @@ function chars(input){
   return true; // default validation only
 }
 
+searchByCriteria(data);
+
+//main search by criteria function
 function searchByCriteria(people){
-  let userSearchCriteria = prompt('What do you want to search for?: Gender? ').toLowerCase();
+  let userSearchCriteria = prompt('What characteristics do you want to search for?: Gender? Age? ').toLowerCase();
   switch (userSearchCriteria){
     case 'gender':
       let genderSearchCriteria = prompt('male or female: ').toLowerCase();
       let genderList = sortByGender(genderSearchCriteria, people);
       outputTheNames(genderList);
       break;
+    case 'age':
+      let birthdayList = calculateAge(people);
+      console.log(birthdayList);
+      let ageArray = addAgeToDataSet(people, birthdayList);
+      console.log(people);
+      console.log(ageArray);
+      let ageSearchCriteriaMax = prompt("Input the oldest age you want to see? ");
+      let ageSearchCriteriaMin = prompt("Input the youngest age you want to see? ");
+      let sampleAgeList = sortByAge(ageSearchCriteriaMin, ageSearchCriteriaMax, birthdayList);
+      console.log(sampleAgeList);
+/*       let ageList = sortByMinAge(ageSearchCriteriaMin, people);
+      console.log(ageList);
+      finalAgeList = sortyByMaxAge(ageSearchCriteriaMax, ageList)
+      console.log(finalAgeList); */
+      outputTheNames(finalAgeList);
+      break;
   }
 }
 
-searchByCriteria(data);
+//add the birthday list to the data 
+function addAgeToDataSet(people, ageArray){
+  for (let i = 0; i<people.length; i++){
+    if (i<people.length){
+      people[i].age = ageArray[i];
+    }
+  }
+}
 
+//search by age group
+function sortByAge (minAge, maxAge, people){
+  let ageBlock = people.filter(function(person){
+    return (minAge < person && person < maxAge);
+  });
+  return ageBlock;
+}
+
+/* function sortByMinAge(minAge, people){
+  let count = 0;
+  let ageBlockMin = people.filter(calculateAge(people, count));
+  count ++;
+  return (ageBlockMin > minAge);
+}
+function sortByMaxAge(maxAge, people){  
+  let count = 0;
+let ageBlockFinal = people.filter(calculateAge(people, count));
+  count ++; 
+  return (ageBlockFinal < maxAge);
+} */
+
+  /* for (let i = 0; i < people.data; i++){
+    let currentPersonAge = calculateAge(people, i);
+    if (minAge < currentPersonAge && currentPersonAge < maxAge){
+      let ageBlock = people.filter(function(person){
+        return (minAge < person.dob && person.dob < maxAge);
+      });
+      return ageBlock;
+    }
+  }
+} */
+
+//search by gender
 function sortByGender(genderSearchCriteria, people){
   switch (genderSearchCriteria){
     case 'male':
@@ -133,6 +192,7 @@ function sortByGender(genderSearchCriteria, people){
   }
 }
 
+//output the names of the people after the search criteria
 function outputTheNames(people){
   for (let i = 0; i < people.length; i++){
     if (i<people.length){
@@ -141,4 +201,39 @@ function outputTheNames(people){
       console.log(firstName + " " + lastName);
     }
   }
+}
+
+function calculateAge(dob) {
+  let arrayOfAges = [];
+  for (let i = 0; i<dob.length; i++){
+    let dateOfBirth = dob[i].dob.split("/");
+    console.log(dateOfBirth);
+    let dobMonth = dateOfBirth[0];
+    let dobDay = dateOfBirth[1];
+    let dobYear = dateOfBirth[2];
+
+    //store today's date
+    let dateOfToday = new Date();
+    //console.log(dateOfToday);
+    let currentMonth = dateOfToday.getMonth()+1;
+    //console.log(currentMonth);
+    let currentDay = dateOfToday.getDate();
+    //console.log(currentDay);
+    let currentYear = dateOfToday.getFullYear();
+    //console.log(currentYear);
+
+    //calculate current age 
+    let currentAge = (currentYear - dobYear);
+    //console.log(currentAge);
+    if((currentMonth < dobMonth) || ((currentMonth == dobMonth) && currentDay < dobDay)){
+      currentAge--;
+      console.log(currentAge);
+      arrayOfAges.push(currentAge);
+    }
+    else{
+      console.log(currentAge);
+      arrayOfAges.push(currentAge);
+    }
+  }
+  return arrayOfAges;
 }
