@@ -121,26 +121,85 @@ function searchByCriteria(people){
       console.log(birthdayList);
       addAgeToDataSet(people, birthdayList);
       console.log(people);
-      let ageSearchCriteriaMax = prompt("Input the oldest age you want to see:");
-      let ageSearchCriteriaMin = prompt("Input the youngest age you want to see:");
+      sortByMaxMin('age', people);
+/*       let ageSearchCriteriaMax = sortByMax("Input the oldest age you want to see:", 'age');
+      let ageSearchCriteriaMin = sortByMin("Input the youngest age you want to see:", 'age');
+      let finalAgeList = sortByAge(ageSearchCriteriaMin, ageSearchCriteriaMax, people);
+      console.log(finalAgeList);
+      outputTheNames(finalAgeList); */
+      break;
+    case 'height':
+      sortByMaxMin('height', people);
+/*       let heightSearchCriteriaMax = sortByMax("Input the tallest height you want to see:", 'height');
+      let heightSearchCriteriaMin = sortByMin("Input the smallest height you want to see:", 'height');
+      let finalHeightList = sortByHeight(heightSearchCriteriaMin, heightSearchCriteriaMax, people);
+      console.log(finalHeightList);
+      outputTheNames(finalHeightList); */
+      break;
+    case 'weight':
+      sortByMaxMin('weight', people);
+/*       let weightSearchCriteriaMax = sortByMax("Input the heaviest weight you want to see:", 'weight');
+      let weightSearchCriteriaMin = sortByMin("Input the lightest weight you want to see:",'weight');
+      let finalWeightList = sortByWeight(weightSearchCriteriaMin, weightSearchCriteriaMax, people);
+      console.log(finalWeightList);
+      outputTheNames(finalWeightList); */
+      break;
+  }
+}
+
+//search by max and min criteria
+function sortByMaxMin (criteria, people){
+  switch(criteria){
+    case 'age':
+      let ageSearchCriteriaMax = sortByMax("Input the oldest age you want to see:", 'age');
+      let ageSearchCriteriaMin = sortByMin("Input the youngest age you want to see:", 'age');
       let finalAgeList = sortByAge(ageSearchCriteriaMin, ageSearchCriteriaMax, people);
       console.log(finalAgeList);
       outputTheNames(finalAgeList);
-      break;
     case 'height':
-      let heightSearchCriteriaMax = prompt("Input the tallest height you want to see:");
-      let heightSearchCriteriaMin = prompt("Input the smallest height you want to see:");
+      let heightSearchCriteriaMax = sortByMax("Input the tallest height you want to see:", 'height');
+      let heightSearchCriteriaMin = sortByMin("Input the smallest height you want to see:", 'height');
       let finalHeightList = sortByHeight(heightSearchCriteriaMin, heightSearchCriteriaMax, people);
       console.log(finalHeightList);
       outputTheNames(finalHeightList);
-      break;
     case 'weight':
-      let weightSearchCriteriaMax = prompt("Input the heaviest weight you want to see:");
-      let weightSearchCriteriaMin = prompt("Input the lightest weight you want to see:");
+      let weightSearchCriteriaMax = sortByMax("Input the heaviest weight you want to see:", 'weight');
+      let weightSearchCriteriaMin = sortByMin("Input the lightest weight you want to see:",'weight');
       let finalWeightList = sortByWeight(weightSearchCriteriaMin, weightSearchCriteriaMax, people);
       console.log(finalWeightList);
       outputTheNames(finalWeightList);
       break;
+  }
+}
+
+
+//sort by max criteria
+function sortByMax(question, criteria){
+  switch(criteria){
+    case 'age':
+      let ageSearchCriteriaMax = prompt(question);
+      return ageSearchCriteriaMax;
+    case 'height':
+      let heightSearchCriteriaMax = prompt(question);
+      return heightSearchCriteriaMax;
+    case 'weight':
+      let weightSearchCriteriaMax = prompt(question);
+      return weightSearchCriteriaMax;
+  }
+}
+
+//sort by min criteria
+function sortByMin(question, criteria){
+  switch(criteria){
+    case 'age':
+      let ageSearchCriteriaMin = prompt(question);
+      return ageSearchCriteriaMin;
+    case 'height':
+      let heightSearchCriteriaMin = prompt(question);
+      return heightSearchCriteriaMin;
+    case 'weight':
+      let weightSearchCriteriaMin = prompt(question);
+      return weightSearchCriteriaMin;
   }
 }
 
