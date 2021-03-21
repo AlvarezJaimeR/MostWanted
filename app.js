@@ -109,7 +109,7 @@ searchByCriteria(data);
 
 //main search by criteria function
 function searchByCriteria(people){
-  let userSearchCriteria = prompt('What characteristics do you want to search for?: Gender? Age? ').toLowerCase();
+  let userSearchCriteria = prompt('What characteristics do you want to search for?: Gender? Age? Height? Weight?').toLowerCase();
   switch (userSearchCriteria){
     case 'gender':
       let genderSearchCriteria = prompt('male or female: ').toLowerCase();
@@ -121,13 +121,43 @@ function searchByCriteria(people){
       console.log(birthdayList);
       addAgeToDataSet(people, birthdayList);
       console.log(people);
-      let ageSearchCriteriaMax = prompt("Input the oldest age you want to see? ");
-      let ageSearchCriteriaMin = prompt("Input the youngest age you want to see? ");
+      let ageSearchCriteriaMax = prompt("Input the oldest age you want to see:");
+      let ageSearchCriteriaMin = prompt("Input the youngest age you want to see:");
       let finalAgeList = sortByAge(ageSearchCriteriaMin, ageSearchCriteriaMax, people);
       console.log(finalAgeList);
       outputTheNames(finalAgeList);
       break;
+    case 'height':
+      let heightSearchCriteriaMax = prompt("Input the tallest height you want to see:");
+      let heightSearchCriteriaMin = prompt("Input the smallest height you want to see:");
+      let finalHeightList = sortByHeight(heightSearchCriteriaMin, heightSearchCriteriaMax, people);
+      console.log(finalHeightList);
+      outputTheNames(finalHeightList);
+      break;
+    case 'weight':
+      let weightSearchCriteriaMax = prompt("Input the heaviest weight you want to see:");
+      let weightSearchCriteriaMin = prompt("Input the lightest weight you want to see:");
+      let finalWeightList = sortByWeight(weightSearchCriteriaMin, weightSearchCriteriaMax, people);
+      console.log(finalWeightList);
+      outputTheNames(finalWeightList);
+      break;
   }
+}
+
+//sort by weight group
+function sortByWeight (minWeight, maxWeight, people){
+  let weightBlock = people.filter(function(person){
+    return (minWeight < person.weight && person.weight < maxWeight);
+  })
+  return weightBlock;
+}
+
+//sort by height group
+function sortByHeight (minHeight, maxHeight, people){
+  let heightBlock = people.filter(function(person){
+    return (minHeight < person.height && person.height < maxHeight);
+  })
+  return heightBlock;
 }
 
 //add the birthday list to the data 
