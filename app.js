@@ -1,23 +1,61 @@
 "use strict"
-/*
-Build all of your functions for displaying and gathering information below (GUI).
-*/
+
+var script = document.createElement('script');
+script.src = './data.js';
+document.head.appendChild(script);
 
 // app is the function called to start the entire application
+
+function promptFor(question, valid){
+  do{
+    var response = prompt(question).trim();
+  } while(!response || !valid(response));
+  return response;
+}
+
+
+// helper function to pass into promptFor to validate yes/no answers
+function yesNo(input){
+  return input.toLowerCase() == "yes" || input.toLowerCase() == "no";
+}
+
 function app(people){
-  let searchType = promptFor("Do you know the name of the person you are looking for? Enter 'yes' or 'no'", yesNo).toLowerCase();
-  let searchResults;
+  let searchType = promptFor("Do you know the first and last name of the person you are searching? Enter 'yes' or 'no'", yesNo).toLowerCase();
+ 
   switch(searchType){
     case 'yes':
-      searchResults = searchByName(people);
+      let searchFull = prompt('Enter full name:').toLowerCase();
+      for (let i = 0; i < data.length; i++) {
+          let fullName = (data[i].firstName + " " + data[i].lastName).toLowerCase();
+            if (searchFull === fullName) {
+              let foundPerson = prompt("Found " + fullName + " . Do you want to know their 'info', 'family', or 'descendants'? Type the option you want or 'restart' or 'quit.'");
+              if (foundPerson === 'info') {
+                return alert(data[i].gender + "\n" + data[i].dob + "\n" + data[i].height + "\n" + data[i].weight + "\n" + data[i].eyeColor + "\n" + data[i].occupation);
+              } if (foundPerson === 'family') {
+                 
+               } else {
+                app(people);
+              }
+            }     
+          }
       break;
     case 'no':
-      // TODO: search by traits
+      let userIndicate = prompt('How would you like to search? Enter either "first name", "last name", or "by trait":').toLowerCase();
+      if (userIndicate === 'first name'){
+       prompt('Enter first name:');
+      } else if (userIndicate === 'last name') {
+         prompt('Enter last name');
+      } else if (userIndicate === 'by trait') {
+        prompt('Enter trait. Type either "gender", "dob", "eye color", "height", "weight", or "occupation":').toLowerCase();
+      } else {
+        return false;
+      }
       break;
       default:
     app(people); // restart app
       break;
-  }
+  }    
+  
   
   // Call the mainMenu function ONLY after you find the SINGLE person you are looking for
   mainMenu(searchResults, people);
@@ -105,7 +143,7 @@ function chars(input){
   return true; // default validation only
 }
 
-searchByCriteria(data);
+
 
 //main search by criteria function
 function searchByCriteria(people){
