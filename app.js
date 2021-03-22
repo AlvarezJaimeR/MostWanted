@@ -109,7 +109,7 @@ searchByCriteria(data);
 
 //main search by criteria function
 function searchByCriteria(people){
-  let userSearchCriteria = prompt('What characteristics do you want to search for?: Gender? Age? Height? Weight? Eye Color?').toLowerCase();
+  let userSearchCriteria = prompt('What characteristics do you want to search for?: Gender? Age? Height? Weight? Eye Color? Occupation? Type "exit" if finished').toLowerCase();
   switch (userSearchCriteria){
     case 'gender':
       let genderSearchCriteria = prompt('male or female: ').toLowerCase();
@@ -133,25 +133,42 @@ function searchByCriteria(people){
       let eyeColorSearchCriteria = prompt('blue, brown, black, hazel, or green').toLowerCase();
       let eyeColorList = sortByEyeColor(eyeColorSearchCriteria, people);
       outputTheNames(eyeColorList);
+      break;
+    case 'occupation':
+      let occupationSearchCriteria = prompt('programmer, assistant, landscaper, nurse, student, architect, doctor').toLowerCase();
+      let occupationList = sortByOccupation(occupationSearchCriteria, people);
+      outputTheNames(occupationList);
+      break;
+    case 'exit':
+      console.log('end');
+      break;
   }
+}
+
+//search by occupation
+function sortByOccupation(occupationSearchCriteria, people){
+  let occupationBlock = people.filter(function(person){
+    return (person.occupation === occupationSearchCriteria);
+  });
+  return occupationBlock;
 }
 
 //search by eye color
 function sortByEyeColor(eyeColorSearchCriteria, people){
   //let flag = false;
-  let EyeBlock = people.filter(function(person){
-    console.log(person.eyeColor.includes(eyeColorSearchCriteria));
+  let eyeBlock = people.filter(function(person){
+    //console.log(person.eyeColor.includes(eyeColorSearchCriteria));
     /*if (person.eyeColor.includes(eyeColorSearchCriteria)){
       console.log("Passed");
     }else{
       if(!flag){
-        console.log("Not Found");
+        console.log("Color not found");
         flag = true;
       }
     }*/
     return (person.eyeColor === eyeColorSearchCriteria);
   });
-  return EyeBlock;
+  return eyeBlock;
 }
 
 //search by max and min criteria
@@ -163,12 +180,14 @@ function sortByMaxMin (criteria, people){
       let finalAgeList = sortByAge(ageSearchCriteriaMin, ageSearchCriteriaMax, people);
       console.log(finalAgeList);
       outputTheNames(finalAgeList);
+      break;
     case 'height':
       let heightSearchCriteriaMax = sortByMax("Input the tallest height you want to see:", 'height');
       let heightSearchCriteriaMin = sortByMin("Input the smallest height you want to see:", 'height');
       let finalHeightList = sortByHeight(heightSearchCriteriaMin, heightSearchCriteriaMax, people);
       console.log(finalHeightList);
       outputTheNames(finalHeightList);
+      break;
     case 'weight':
       let weightSearchCriteriaMax = sortByMax("Input the heaviest weight you want to see:", 'weight');
       let weightSearchCriteriaMin = sortByMin("Input the lightest weight you want to see:",'weight');
@@ -267,6 +286,7 @@ function outputTheNames(people){
       console.log(firstName + " " + lastName);
     }
   }
+  searchByCriteria(people);
 }
 
 //calculate the age from the dob
