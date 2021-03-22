@@ -138,33 +138,20 @@ function searchByCriteria(people){
 
 //search by eye color
 function sortByEyeColor(eyeColorSearchCriteria, people){
-  switch (eyeColorSearchCriteria){
-    case 'blue':
-      let blueEyeBlock = people.filter(function(person){
-        return (person.eyeColor === 'blue');
-      });
-      return blueEyeBlock;
-    case 'brown':
-      let brownEyeBlock = people.filter(function(person){
-        return (person.eyeColor === 'brown');
-      });
-      return brownEyeBlock;
-    case 'black':
-      let blackEyeBlock = people.filter(function(person){
-        return (person.eyeColor === 'black');
-      });
-      return blackEyeBlock;
-    case 'hazel':
-      let hazelEyeBlock = people.filter(function(person){
-        return (person.eyeColor === 'hazel');
-      });
-      return hazelEyeBlock;
-    case 'green':
-      let greenEyeBlock = people.filter(function(person){
-        return (person.eyeColor === 'green');
-      });
-      return greenEyeBlock;
-  }
+  //let flag = false;
+  let EyeBlock = people.filter(function(person){
+    console.log(person.eyeColor.includes(eyeColorSearchCriteria));
+    /*if (person.eyeColor.includes(eyeColorSearchCriteria)){
+      console.log("Passed");
+    }else{
+      if(!flag){
+        console.log("Not Found");
+        flag = true;
+      }
+    }*/
+    return (person.eyeColor === eyeColorSearchCriteria);
+  });
+  return EyeBlock;
 }
 
 //search by max and min criteria
