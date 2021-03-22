@@ -109,7 +109,7 @@ searchByCriteria(data);
 
 //main search by criteria function
 function searchByCriteria(people){
-  let userSearchCriteria = prompt('What characteristics do you want to search for?: Gender? Age? Height? Weight?').toLowerCase();
+  let userSearchCriteria = prompt('What characteristics do you want to search for?: Gender? Age? Height? Weight? Eye Color?').toLowerCase();
   switch (userSearchCriteria){
     case 'gender':
       let genderSearchCriteria = prompt('male or female: ').toLowerCase();
@@ -122,28 +122,48 @@ function searchByCriteria(people){
       addAgeToDataSet(people, birthdayList);
       console.log(people);
       sortByMaxMin('age', people);
-/*       let ageSearchCriteriaMax = sortByMax("Input the oldest age you want to see:", 'age');
-      let ageSearchCriteriaMin = sortByMin("Input the youngest age you want to see:", 'age');
-      let finalAgeList = sortByAge(ageSearchCriteriaMin, ageSearchCriteriaMax, people);
-      console.log(finalAgeList);
-      outputTheNames(finalAgeList); */
       break;
     case 'height':
       sortByMaxMin('height', people);
-/*       let heightSearchCriteriaMax = sortByMax("Input the tallest height you want to see:", 'height');
-      let heightSearchCriteriaMin = sortByMin("Input the smallest height you want to see:", 'height');
-      let finalHeightList = sortByHeight(heightSearchCriteriaMin, heightSearchCriteriaMax, people);
-      console.log(finalHeightList);
-      outputTheNames(finalHeightList); */
       break;
     case 'weight':
       sortByMaxMin('weight', people);
-/*       let weightSearchCriteriaMax = sortByMax("Input the heaviest weight you want to see:", 'weight');
-      let weightSearchCriteriaMin = sortByMin("Input the lightest weight you want to see:",'weight');
-      let finalWeightList = sortByWeight(weightSearchCriteriaMin, weightSearchCriteriaMax, people);
-      console.log(finalWeightList);
-      outputTheNames(finalWeightList); */
       break;
+    case 'eye color':
+      let eyeColorSearchCriteria = prompt('blue, brown, black, hazel, or green').toLowerCase();
+      let eyeColorList = sortByEyeColor(eyeColorSearchCriteria, people);
+      outputTheNames(eyeColorList);
+  }
+}
+
+//search by eye color
+function sortByEyeColor(eyeColorSearchCriteria, people){
+  switch (eyeColorSearchCriteria){
+    case 'blue':
+      let blueEyeBlock = people.filter(function(person){
+        return (person.eyeColor === 'blue');
+      });
+      return blueEyeBlock;
+    case 'brown':
+      let brownEyeBlock = people.filter(function(person){
+        return (person.eyeColor === 'brown');
+      });
+      return brownEyeBlock;
+    case 'black':
+      let blackEyeBlock = people.filter(function(person){
+        return (person.eyeColor === 'black');
+      });
+      return blackEyeBlock;
+    case 'hazel':
+      let hazelEyeBlock = people.filter(function(person){
+        return (person.eyeColor === 'hazel');
+      });
+      return hazelEyeBlock;
+    case 'green':
+      let greenEyeBlock = people.filter(function(person){
+        return (person.eyeColor === 'green');
+      });
+      return greenEyeBlock;
   }
 }
 
@@ -171,7 +191,6 @@ function sortByMaxMin (criteria, people){
       break;
   }
 }
-
 
 //sort by max criteria
 function sortByMax(question, criteria){
@@ -263,6 +282,7 @@ function outputTheNames(people){
   }
 }
 
+//calculate the age from the dob
 function calculateAge(dob) {
   let arrayOfAges = [];
   for (let i = 0; i<dob.length; i++){
