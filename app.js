@@ -1,27 +1,13 @@
 "use strict"
-
-var script = document.createElement('script');
-script.src = './data.js';
-document.head.appendChild(script);
-
-// app is the function called to start the entire application
-
-function promptFor(question, valid){
-  do{
-    var response = prompt(question).trim();
-  } while(!response || !valid(response));
-  return response;
-}
-
-
-// helper function to pass into promptFor to validate yes/no answers
-function yesNo(input){
-  return input.toLowerCase() == "yes" || input.toLowerCase() == "no";
-}
-
 function app(people){
   let searchType = promptFor("Do you know the first and last name of the person you are searching? Enter 'yes' or 'no'", yesNo).toLowerCase();
- 
+  knowFirstOrLastName(searchType, people);
+  // Call the mainMenu function ONLY after you find the SINGLE person you are looking for
+  mainMenu(searchResults, people);
+}
+
+//Know first or last name of the person
+function knowFirstOrLastName(searchType, people){
   switch(searchType){
     case 'yes':
       let searchFull = prompt('Enter full name:').toLowerCase();
@@ -32,8 +18,8 @@ function app(people){
               if (foundPerson === 'info') {
                 return alert(data[i].gender + "\n" + data[i].dob + "\n" + data[i].height + "\n" + data[i].weight + "\n" + data[i].eyeColor + "\n" + data[i].occupation);
               } if (foundPerson === 'family') {
-                 
-               } else {
+                
+              } else {
                 app(people);
               }
             }     
@@ -42,11 +28,11 @@ function app(people){
     case 'no':
       let userIndicate = prompt('How would you like to search? Enter either "first name", "last name", or "by trait":').toLowerCase();
       if (userIndicate === 'first name'){
-       prompt('Enter first name:');
+      prompt('Enter first name:');
       } else if (userIndicate === 'last name') {
-         prompt('Enter last name');
+        prompt('Enter last name');
       } else if (userIndicate === 'by trait') {
-        prompt('Enter trait. Type either "gender", "dob", "eye color", "height", "weight", or "occupation":').toLowerCase();
+        searchByCriteria(people);
       } else {
         return false;
       }
@@ -55,24 +41,16 @@ function app(people){
     app(people); // restart app
       break;
   }    
-  
-  
-  // Call the mainMenu function ONLY after you find the SINGLE person you are looking for
-  mainMenu(searchResults, people);
 }
 
 // Menu function to call once you find who you are looking for
 function mainMenu(person, people){
-
   /* Here we pass in the entire person object that we found in our search, as well as the entire original dataset of people. We need people in order to find descendants and other information that the user may want. */
-
   if(!person){
     alert("Could not find that individual.");
     return app(people); // restart
   }
-
   let displayOption = prompt("Found " + person.firstName + " " + person.lastName + " . Do you want to know their 'info', 'family', or 'descendants'? Type the option you want or 'restart' or 'quit'");
-
   switch(displayOption){
     case "info":
     // TODO: get person's info
@@ -142,8 +120,6 @@ function yesNo(input){
 function chars(input){
   return true; // default validation only
 }
-
-
 
 //main search by criteria function
 function searchByCriteria(people){
