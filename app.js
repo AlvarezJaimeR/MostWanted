@@ -84,11 +84,12 @@ function mainMenu(person, people){
   console.log(person);
   for (let i = 0; i<person.length; i++){
     let displayOption = promptFor("Found " + person[i].firstName + " " + person[i].lastName + " . Do you want to know their 'info', 'family', or 'descendants'? Type the option you want or 'restart' or 'quit'", chars);
-    switch(displayOption){
+      switch(displayOption){
       case "info":
       displayPerson(person);
       break;
       case "family":
+      displayFamily(people, person);
       // TODO: get person's family
       break;
       case "descendants":
@@ -128,6 +129,46 @@ function displayPerson(person){
     alert(personInfo);
   }
 }
+
+
+
+function displayFamily(people, person) {
+  let result = [];
+  people.forEach(p => {
+
+    //if there is a matching spouse
+    if(person[0].currentSpouse === p.id){
+      result.push('Spouse: ' + ' '+ p.firstName + " " + p.lastName)
+    }
+     
+//     //if there is anotber
+    p.parents.forEach(parent => {
+      if(person[0].currentSpouse === parent){
+       // console.log("got here>>>>>", p)
+        result.push('Parent: ' + p.firstName + " " + p.lastName)
+      }
+    }) 
+
+    //the person's parent
+    if(person[0].parents.length !== 0){
+      person[0].parents.forEach(y => {
+        if(y === p.id){
+          result.push('Parent: ' + p.firstName + " " + p.lastName) 
+        } 
+      })
+
+    }
+  })
+
+ alert(result.join("\n")) 
+
+
+
+}
+
+
+
+
 
 // function that prompts and validates user input
 function promptFor(question, valid){
@@ -383,3 +424,6 @@ function calculateAge(dob) {
   }
   return arrayOfAges;
 }
+
+
+  
