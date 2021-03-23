@@ -6,25 +6,31 @@ function app(people){
   mainMenu(foundPerson, people);
 }
 
+//functions we might be able to use
+function searchByName(people){
+  let firstName = promptFor("What is the person's first name?", chars);
+  firstName = firstName.charAt(0).toUpperCase()+firstName.slice(1);
+  let lastName = promptFor("What is the person's last name?", chars);
+  lastName = lastName.charAt(0).toUpperCase()+lastName.slice(1);
+
+  let foundPerson = people.filter(function(person){
+    if(person.firstName === firstName && person.lastName === lastName){
+      return true;
+    }
+    else{
+      return false;
+    }
+  })
+  return foundPerson;
+}
+
 //Know first or last name of the person
 function knowFirstOrLastName(searchType, people){
   switch(searchType){
     case 'yes':
-      let searchFull = prompt('Enter full name:').toLowerCase();
-      for (let i = 0; i < people.length; i++) {
-          let fullName = (people[i].firstName + " " + people[i].lastName).toLowerCase();
-            if (searchFull === fullName) {
-              let foundPerson = prompt("Found " + fullName + " . Do you want to know their 'info', 'family', or 'descendants'? Type the option you want or 'restart' or 'quit.'");
-              if (foundPerson === 'info') {
-                return alert(people[i].gender + "\n" + people[i].dob + "\n" + people[i].height + "\n" + people[i].weight + "\n" + people[i].eyeColor + "\n" + people[i].occupation);
-              } if (foundPerson === 'family') {
-                
-              } else {
-                app(people);
-              }
-            }     
-          }
-      break;
+      let foundPerson = searchByName(people);
+      console.log(foundPerson);
+      return foundPerson;
     case 'no':
       let userIndicate = prompt('How would you like to search? Enter either "first name", "last name", or "by trait":').toLowerCase();
       switch(userIndicate){
@@ -75,24 +81,27 @@ function mainMenu(person, people){
     alert("Could not find that individual.");
     return app(people); // restart
   }
-  let displayOption = prompt("Found " + person.firstName + " " + person.lastName + " . Do you want to know their 'info', 'family', or 'descendants'? Type the option you want or 'restart' or 'quit'");
-  switch(displayOption){
-    case "info":
-    displayPerson(person);
-    break;
-    case "family":
-    // TODO: get person's family
-    break;
-    case "descendants":
-    // TODO: get person's descendants
-    break;
-    case "restart":
-    app(people); // restart
-    break;
-    case "quit":
-    return; // stop execution
-    default:
-    return mainMenu(person, people); // ask again
+  console.log(person);
+  for (let i = 0; i<person.length; i++){
+    let displayOption = prompt("Found " + person[i].firstName + " " + person[i].lastName + " . Do you want to know their 'info', 'family', or 'descendants'? Type the option you want or 'restart' or 'quit'");
+    switch(displayOption){
+      case "info":
+      displayPerson(person);
+      break;
+      case "family":
+      // TODO: get person's family
+      break;
+      case "descendants":
+      // TODO: get person's descendants
+      break;
+      case "restart":
+      app(people); // restart
+      break;
+      case "quit":
+      return; // stop execution
+      default:
+      return mainMenu(person, people); // ask again
+    }
   }
 }
 
@@ -106,15 +115,16 @@ function displayPeople(people){
 function displayPerson(person){
   // print all of the information about a person:
   // height, weight, age, name, occupation, eye color.
+  console.log(person);
   for (let i=0; i<person.length; i++){
     let personInfo = "First Name: " + person[i].firstName + "\n";
     personInfo += "Last Name: " + person[i].lastName + "\n";
-    personInfo += "Gender: " + person[i].gender +"\n";
+    personInfo += "Gender: " + person[i].gender + "\n";
     personInfo += "Date of Birth: " + person[i].dob + "\n";
     personInfo += "Height: " + person[i].height + "\n";
-    personInfo += "Weight:" + person[i].weight +"\n";
-    personInfo += "Eye Color:" + person[i].eyeColor +"\n";
-    personInfo += "Occupation:" + person[i].occupation +"\n";
+    personInfo += "Weight:" + person[i].weight + "\n";
+    personInfo += "Eye Color:" + person[i].eyeColor + "\n";
+    personInfo += "Occupation:" + person[i].occupation + "\n";
     alert(personInfo);
   }
 }
@@ -359,23 +369,6 @@ function calculateAge(dob) {
   return arrayOfAges;
 }
 
-//functions we might be able to use
-function searchByName(people){
-  let firstName = promptFor("What is the person's first name?", chars);
-  let lastName = promptFor("What is the person's last name?", chars);
-
-  let foundPerson = people.filter(function(person){
-    if(person.firstName === firstName && person.lastName === lastName){
-      return true;
-    }
-    else{
-      return false;
-    }
-  })
-  // TODO: find the person using the name they entered
-  return foundPerson;
-}
-
 //output the names of the people after the search criteria
 function outputTheNames(people){
   for (let i = 0; i < people.length; i++){
@@ -387,3 +380,21 @@ function outputTheNames(people){
   }
   searchByCriteria(people);
 }
+/*       let searchFull = prompt('Enter full name:').toLowerCase();
+      let fullNameBlock = searchForFullName (searchFull, people);
+      console.log(fullNameBlock);
+      for (let i = 0; i < people.length; i++) {
+          let fullName = (people[i].firstName + " " + people[i].lastName).toLowerCase();
+          console.log(searchFull);
+          console.log(fullName);
+            if (searchFull === fullName) {
+              let foundPerson = prompt("Found " + fullName + " . Do you want to know their 'info', 'family', or 'descendants'? Type the option you want or 'restart' or 'quit.'");
+              if (foundPerson === 'info') {
+                return alert(people[i].gender + "\n" + people[i].dob + "\n" + people[i].height + "\n" + people[i].weight + "\n" + people[i].eyeColor + "\n" + people[i].occupation);
+              } if (foundPerson === 'family') {
+                
+              } else {
+                app(people);
+              }
+            }     
+          } */
