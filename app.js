@@ -1,9 +1,9 @@
 "use strict"
 function app(people){
   let searchType = promptFor("Do you know the first and last name of the person you are searching? Enter 'yes' or 'no'", yesNo).toLowerCase();
-  knowFirstOrLastName(searchType, people);
+  let foundPerson = knowFirstOrLastName(searchType, people);
   // Call the mainMenu function ONLY after you find the SINGLE person you are looking for
-  mainMenu(searchResults, people);
+  mainMenu(foundPerson, people);
 }
 
 //Know first or last name of the person
@@ -11,12 +11,12 @@ function knowFirstOrLastName(searchType, people){
   switch(searchType){
     case 'yes':
       let searchFull = prompt('Enter full name:').toLowerCase();
-      for (let i = 0; i < data.length; i++) {
-          let fullName = (data[i].firstName + " " + data[i].lastName).toLowerCase();
+      for (let i = 0; i < people.length; i++) {
+          let fullName = (people[i].firstName + " " + people[i].lastName).toLowerCase();
             if (searchFull === fullName) {
               let foundPerson = prompt("Found " + fullName + " . Do you want to know their 'info', 'family', or 'descendants'? Type the option you want or 'restart' or 'quit.'");
               if (foundPerson === 'info') {
-                return alert(data[i].gender + "\n" + data[i].dob + "\n" + data[i].height + "\n" + data[i].weight + "\n" + data[i].eyeColor + "\n" + data[i].occupation);
+                return alert(people[i].gender + "\n" + people[i].dob + "\n" + people[i].height + "\n" + people[i].weight + "\n" + people[i].eyeColor + "\n" + people[i].occupation);
               } if (foundPerson === 'family') {
                 
               } else {
@@ -27,20 +27,45 @@ function knowFirstOrLastName(searchType, people){
       break;
     case 'no':
       let userIndicate = prompt('How would you like to search? Enter either "first name", "last name", or "by trait":').toLowerCase();
-      if (userIndicate === 'first name'){
-      prompt('Enter first name:');
-      } else if (userIndicate === 'last name') {
-        prompt('Enter last name');
-      } else if (userIndicate === 'by trait') {
-        searchByCriteria(people);
-      } else {
-        return false;
-      }
-      break;
-      default:
-    app(people); // restart app
-      break;
+      switch(userIndicate){
+        case 'first name': 
+          let userInputFirstName = prompt ('Input the first name you would like to search: ');
+          userInputFirstName = userInputFirstName.charAt(0).toUpperCase()+userInputFirstName.slice(1);
+          console.log(userInputFirstName);
+          let firstNameBlock = firstNameOnly(userInputFirstName, people);
+          console.log(firstNameBlock);
+          let answerFirstName = prompt('Would you like to search by trait?: yes or no');
+          optionToSearchTrait(answerFirstName, firstNameBlock);
+          break;
+        case 'last name':
+          let userInputLastName = prompt ('Input the last name you would like to search: ');
+          userInputLastName = userInputLastName.charAt(0).toUpperCase()+userInputLastName.slice(1);
+          console.log(userInputLastName);
+          let lastNameBlock = lastNameOnly(userInputLastName, people);
+          console.log(lastNameBlock);
+          let answerLastName = prompt('Would you like to search by trait?: yes or no');
+          optionToSearchTrait(answerLastName, lastNameBlock);
+          break;
+        case 'by trait':
+          searchByCriteria(people);
+          break;
+      } 
+    default:
+      app(people); // restart app
+    break;
   }    
+}
+
+//Option to search by trait
+function optionToSearchTrait(answer, people){
+  switch(answer){
+    case 'yes':
+      searchByCriteria(people);
+      break;
+    case 'no':
+      displayPeople(people);
+      break;
+  }
 }
 
 // Menu function to call once you find who you are looking for
@@ -53,7 +78,7 @@ function mainMenu(person, people){
   let displayOption = prompt("Found " + person.firstName + " " + person.lastName + " . Do you want to know their 'info', 'family', or 'descendants'? Type the option you want or 'restart' or 'quit'");
   switch(displayOption){
     case "info":
-    // TODO: get person's info
+    displayPerson(person);
     break;
     case "family":
     // TODO: get person's family
@@ -71,22 +96,6 @@ function mainMenu(person, people){
   }
 }
 
-function searchByName(people){
-  let firstName = promptFor("What is the person's first name?", chars);
-  let lastName = promptFor("What is the person's last name?", chars);
-
-  let foundPerson = people.filter(function(person){
-    if(person.firstName === firstName && person.lastName === lastName){
-      return true;
-    }
-    else{
-      return false;
-    }
-  })
-  // TODO: find the person using the name they entered
-  return foundPerson;
-}
-
 // alerts a list of people
 function displayPeople(people){
   alert(people.map(function(person){
@@ -97,10 +106,17 @@ function displayPeople(people){
 function displayPerson(person){
   // print all of the information about a person:
   // height, weight, age, name, occupation, eye color.
-  let personInfo = "First Name: " + person.firstName + "\n";
-  personInfo += "Last Name: " + person.lastName + "\n";
-  // TODO: finish getting the rest of the information to display
-  alert(personInfo);
+  for (let i=0; i<person.length; i++){
+    let personInfo = "First Name: " + person[i].firstName + "\n";
+    personInfo += "Last Name: " + person[i].lastName + "\n";
+    personInfo += "Gender: " + person[i].gender +"\n";
+    personInfo += "Date of Birth: " + person[i].dob + "\n";
+    personInfo += "Height: " + person[i].height + "\n";
+    personInfo += "Weight:" + person[i].weight +"\n";
+    personInfo += "Eye Color:" + person[i].eyeColor +"\n";
+    personInfo += "Occupation:" + person[i].occupation +"\n";
+    alert(personInfo);
+  }
 }
 
 // function that prompts and validates user input
@@ -123,12 +139,12 @@ function chars(input){
 
 //main search by criteria function
 function searchByCriteria(people){
-  let userSearchCriteria = prompt('What characteristics do you want to search for?: Gender? Age? Height? Weight? Eye Color? Occupation? Type "exit" if finished').toLowerCase();
+  let userSearchCriteria = prompt('What traits do you want to search for?: Gender? Age? Height? Weight? Eye Color? Occupation? Type "exit" if finished').toLowerCase();
   switch (userSearchCriteria){
     case 'gender':
       let genderSearchCriteria = prompt('male or female: ').toLowerCase();
       let genderList = sortByGender(genderSearchCriteria, people);
-      outputTheNames(genderList);
+      displayPeople(genderList);
       break;
     case 'age':
       let birthdayList = calculateAge(people);
@@ -146,17 +162,33 @@ function searchByCriteria(people){
     case 'eye color':
       let eyeColorSearchCriteria = prompt('blue, brown, black, hazel, or green').toLowerCase();
       let eyeColorList = sortByEyeColor(eyeColorSearchCriteria, people);
-      outputTheNames(eyeColorList);
+      displayPeople(eyeColorList);
       break;
     case 'occupation':
       let occupationSearchCriteria = prompt('programmer, assistant, landscaper, nurse, student, architect, doctor').toLowerCase();
       let occupationList = sortByOccupation(occupationSearchCriteria, people);
-      outputTheNames(occupationList);
+      displayPeople(occupationList);
       break;
     case 'exit':
       console.log('end');
       break;
   }
+}
+
+//Search for only the first name
+function firstNameOnly(firstNameSearchCriteria, people){
+  let firstNameBlock = people.filter(function(person){
+    return (person.firstName === firstNameSearchCriteria);
+  });
+  return firstNameBlock;
+}
+
+//Search for only the first name
+function lastNameOnly(lastNameSearchCriteria, people){
+  let lastNameBlock = people.filter(function(person){
+    return (person.lastName === lastNameSearchCriteria);
+  });
+  return lastNameBlock;
 }
 
 //search by occupation
@@ -193,21 +225,21 @@ function sortByMaxMin (criteria, people){
       let ageSearchCriteriaMin = sortByMin("Input the youngest age you want to see:", 'age');
       let finalAgeList = sortByAge(ageSearchCriteriaMin, ageSearchCriteriaMax, people);
       console.log(finalAgeList);
-      outputTheNames(finalAgeList);
+      displayPeople(finalAgeList);
       break;
     case 'height':
       let heightSearchCriteriaMax = sortByMax("Input the tallest height you want to see:", 'height');
       let heightSearchCriteriaMin = sortByMin("Input the smallest height you want to see:", 'height');
       let finalHeightList = sortByHeight(heightSearchCriteriaMin, heightSearchCriteriaMax, people);
       console.log(finalHeightList);
-      outputTheNames(finalHeightList);
+      displayPeople(finalHeightList);
       break;
     case 'weight':
       let weightSearchCriteriaMax = sortByMax("Input the heaviest weight you want to see:", 'weight');
       let weightSearchCriteriaMin = sortByMin("Input the lightest weight you want to see:",'weight');
       let finalWeightList = sortByWeight(weightSearchCriteriaMin, weightSearchCriteriaMax, people);
       console.log(finalWeightList);
-      outputTheNames(finalWeightList);
+      displayPeople(finalWeightList);
       break;
   }
 }
@@ -291,18 +323,6 @@ function sortByGender(genderSearchCriteria, people){
   }
 }
 
-//output the names of the people after the search criteria
-function outputTheNames(people){
-  for (let i = 0; i < people.length; i++){
-    if (i<people.length){
-      let firstName = people[i].firstName;
-      let lastName = people[i].lastName;
-      console.log(firstName + " " + lastName);
-    }
-  }
-  searchByCriteria(people);
-}
-
 //calculate the age from the dob
 function calculateAge(dob) {
   let arrayOfAges = [];
@@ -337,4 +357,33 @@ function calculateAge(dob) {
     }
   }
   return arrayOfAges;
+}
+
+//functions we might be able to use
+function searchByName(people){
+  let firstName = promptFor("What is the person's first name?", chars);
+  let lastName = promptFor("What is the person's last name?", chars);
+
+  let foundPerson = people.filter(function(person){
+    if(person.firstName === firstName && person.lastName === lastName){
+      return true;
+    }
+    else{
+      return false;
+    }
+  })
+  // TODO: find the person using the name they entered
+  return foundPerson;
+}
+
+//output the names of the people after the search criteria
+function outputTheNames(people){
+  for (let i = 0; i < people.length; i++){
+    if (i<people.length){
+      let firstName = people[i].firstName;
+      let lastName = people[i].lastName;
+      console.log(firstName + " " + lastName);
+    }
+  }
+  searchByCriteria(people);
 }
