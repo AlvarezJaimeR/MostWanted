@@ -22,7 +22,6 @@ function mainMenu(person, people){
     case "descendants":
       let startingArray = [];
       let descendants = descendantFinder(person, people, startingArray);
-      console.log(descendants);
       displayPeople(descendants);
     break;
     case "restart":
@@ -89,7 +88,6 @@ function knowFirstOrLastName(searchType, people){
     case 'no':
       let userIndicate = promptFor('How would you like to search? Enter either "first name", "last name", or "by trait":', chars).toLowerCase();
       let nameBlock = noScenarioFirstOrLastName(userIndicate, people);
-      console.log(nameBlock);
       return nameBlock;
     default:
       app(people); // restart app
@@ -103,22 +101,17 @@ function noScenarioFirstOrLastName (userAnswer, people){
     case 'first name': 
       let userInputFirstName = promptFor('Input the first name you would like to search: ', chars);
       userInputFirstName = userInputFirstName.charAt(0).toUpperCase()+userInputFirstName.slice(1);
-      console.log(userInputFirstName);
       let firstNameBlock = searchSpecificCriteria(userInputFirstName, people, userAnswer);
-      console.log(firstNameBlock);
       displayPeople(firstNameBlock);
       return firstNameBlock;
     case 'last name':
       let userInputLastName = promptFor('Input the last name you would like to search: ', chars);
       userInputLastName = userInputLastName.charAt(0).toUpperCase()+userInputLastName.slice(1);
-      console.log(userInputLastName);
       let lastNameBlock = searchSpecificCriteria(userInputLastName, people, userAnswer);
-      console.log(lastNameBlock);
       displayPeople(lastNameBlock);
       return lastNameBlock;
     case 'by trait':
       let searchCriteriaBlock = searchByCriteria(people);
-      console.log(searchCriteriaBlock);
       return searchCriteriaBlock;
     default: 
       app(people);
@@ -151,29 +144,65 @@ function displayPerson(person){
 }
 
 function displayFamily(people, person) {
-  let result = [];
-  people.forEach(function(personCompare) {
-    //if there is a matching spouse
-    if(person[0].currentSpouse === personCompare.id){
-      result.push('Spouse: ' + ' '+ personCompare.firstName + " " + personCompare.lastName);
-    }
-    //if there is a parent
-    person.forEach(function(parent) {
-      if(person[0].currentSpouse === parent.id){
-        result.push('Parent: ' + person.firstName + " " + person.lastName);
-      }
-    }); 
-    //if there is a second parent
-    if(person[0].parents.length !== 0){
-      person[0].parents.forEach(function(parent) {
-        if(parent === person.id){
-          result.push('Parent: ' + person.firstName + " " + person.lastName); 
-        } 
-      });
-    }
+  let fullFamily = [];
+  let currentSpouseRecord = null;
+  let parentRecords = [];
+  let siblingRecords = [];
+  let childrenRecords = [];
+  const currentSpouseID = person[0].currentSpouse;
+
+  if (currentSpouseID != null) {
+    currentSpouseRecord = people.filter(p => {
+      return p.id === currentSpouseID
+    });
+  }
+
+  if (currentSpouseRecord != null) {
+    fullFamily.push('Spouse: ' + currentSpouseRecord[0].firstName + " " + currentSpouseRecord[0].lastName);
+  }
+
+  const parentIds = person[0].parents;
+  if (parentIds.length > 0) {
+    parentRecords = people.filter(p => {
+  return parentIds.includes(p.id)
   });
- alert(result.join("\n"));
+
+  siblingRecords = people.filter(p => {
+    return p.parents.filter(id => { return parentIds.includes(id) && p.id != person[0].id }).length > 0;
+  });
+  }
+
+  for (let i=0; i < parentRecords.length; i++){
+    console.log(parentRecords.length);
+    if (parentRecords.length > 0) {
+      //console.log("parentRecords found: ", parentRecords[0]);
+      fullFamily.push('Parent: ' + parentRecords[i].firstName + " " + parentRecords[i].lastName);
+    }
+  }
+
+  for (let i=0; i < siblingRecords.length; i++){
+    if (siblingRecords.length > 0) {
+      //console.log("siblingRecords found: ", siblingRecords);
+      fullFamily.push('Sibling: ' + siblingRecords[i].firstName + " " + siblingRecords[i].lastName);
+    }
+  }
+
+  // Finding children
+  childrenRecords = people.filter(p => {
+    return p.parents.includes(person[0].id)
+  });
+
+  //console.log(childrenRecords[0]);
+  if (childrenRecords.length > 0) {
+    // console.log("childrenRecords found: " + childrenRecords[0]);
+    childrenRecords.forEach(child => {
+    fullFamily.push('Children: ' + child.firstName + ' ' + child.lastName)
+  })
+  }
+  // console.log(fullFamily.join("\n"));
+    alert(fullFamily.join("\n"))
 }
+  
 
 // function that prompts and validates user input
 function promptFor(question, valid){
@@ -219,9 +248,7 @@ function searchByCriteria(people){
       return genderList;
     case 'age':
       let birthdayList = calculateAge(people);
-      console.log(birthdayList);
       addAgeToDataSet(people, birthdayList);
-      console.log(people);
       let ageList = sortByMaxMin('age', people);
       return ageList;
     case 'height':
@@ -241,7 +268,6 @@ function searchByCriteria(people){
       let finalOccupationList = continueSearchByTrait(occupationList);
       return finalOccupationList;
     case 'exit':
-      console.log('end');
       return people;
     default:
       searchByCriteria(people);
@@ -251,11 +277,11 @@ function searchByCriteria(people){
 
 //continue to search by trait
 function continueSearchByTrait (people){
-  let userContinue = promptFor('Would you like to continue to search by trait? ',yesNo).toLowerCase();
+  let userContinue = promptFor('Would you like to continue to search by trait? yes or no',yesNo).toLowerCase();
   switch (userContinue){
     case 'yes':
-      searchByCriteria(people);
-      break;
+      let newBlock = searchByCriteria(people);
+      return newBlock;
     case 'no':
       displayPeople(people);
       return people;
@@ -298,21 +324,18 @@ function sortByMaxMin (criteria, people){
       let ageSearchCriteriaMax = sortByMax("Input the oldest age you want to see:", 'age');
       let ageSearchCriteriaMin = sortByMin("Input the youngest age you want to see:", 'age');
       let runningAgeList = sortByAge(ageSearchCriteriaMin, ageSearchCriteriaMax, people);
-      console.log(runningAgeList);
       let finalAgeList = continueSearchByTrait(runningAgeList);
       return finalAgeList;
     case 'height':
       let heightSearchCriteriaMax = sortByMax("Input the tallest height (inches) you want to see:", 'height');
       let heightSearchCriteriaMin = sortByMin("Input the smallest height (inches) you want to see:", 'height');
       let heightList = sortByHeight(heightSearchCriteriaMin, heightSearchCriteriaMax, people);
-      console.log(heightList);
       let finalHeightList = continueSearchByTrait(heightList);
       return finalHeightList;
     case 'weight':
       let weightSearchCriteriaMax = sortByMax("Input the heaviest weight (pounds) you want to see:", 'weight');
       let weightSearchCriteriaMin = sortByMin("Input the lightest weight (pounds) you want to see:",'weight');
       let weightList = sortByWeight(weightSearchCriteriaMin, weightSearchCriteriaMax, people);
-      console.log(weightList);
       let finalWeightList = continueSearchByTrait(weightList);
       return finalWeightList;
   }
@@ -402,31 +425,23 @@ function calculateAge(dob) {
   let arrayOfAges = [];
   for (let i = 0; i<dob.length; i++){
     let dateOfBirth = dob[i].dob.split("/");
-    console.log(dateOfBirth);
     let dobMonth = dateOfBirth[0];
     let dobDay = dateOfBirth[1];
     let dobYear = dateOfBirth[2];
 
     //store today's date
     let dateOfToday = new Date();
-    //console.log(dateOfToday);
     let currentMonth = dateOfToday.getMonth()+1;
-    //console.log(currentMonth);
     let currentDay = dateOfToday.getDate();
-    //console.log(currentDay);
     let currentYear = dateOfToday.getFullYear();
-    //console.log(currentYear);
 
     //calculate current age 
     let currentAge = (currentYear - dobYear);
-    //console.log(currentAge);
     if((currentMonth < dobMonth) || ((currentMonth == dobMonth) && currentDay < dobDay)){
       currentAge--;
-      console.log(currentAge);
       arrayOfAges.push(currentAge);
     }
     else{
-      console.log(currentAge);
       arrayOfAges.push(currentAge);
     }
   }
@@ -438,7 +453,6 @@ function descendantFinder(individualPerson, totalPeople, catchArray){
   let filteredPeopleArray = totalPeople.filter(function(everyone){
     return (everyone.parents.length !== 0);
   });
-  console.log(filteredPeopleArray);
   if (individualPerson.length !== 0){
     for (let i = 0; i < filteredPeopleArray.length; i++){
       for (let j = 0; j < individualPerson.length; j++){
@@ -451,7 +465,6 @@ function descendantFinder(individualPerson, totalPeople, catchArray){
   }else{
     return catchArray;
   }
-  console.log(descendantArray);
   descendantFinder(descendantArray, totalPeople, catchArray);
   return catchArray;
 } 
