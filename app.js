@@ -17,10 +17,13 @@ function mainMenu(person, people){
       displayPerson(person);
     break;
     case "family":
-      // TODO: get person's family
+      displayFamily(people, person);
     break;
     case "descendants":
-      // TODO: get person's descendants
+      let startingArray = [];
+      let descendants = descendantFinder(person, people, startingArray);
+      console.log(descendants);
+      displayPeople(descendants);
     break;
     case "restart":
       app(people); // restart
@@ -94,28 +97,6 @@ function knowFirstOrLastName(searchType, people){
   }
 }    
 
-<<<<<<< HEAD
-// Menu function to call once you find who you are looking for
-function mainMenu(person, people){
-  /* Here we pass in the entire person object that we found in our search, as well as the entire original dataset of people. We need people in order to find descendants and other information that the user may want. */
-  if(!person){
-    alert("Could not find that individual.");
-    return app(people); // restart
-  }
-  console.log(person);
-  for (let i = 0; i<person.length; i++){
-    let displayOption = promptFor("Found " + person[i].firstName + " " + person[i].lastName + " . Do you want to know their 'info', 'family', or 'descendants'? Type the option you want or 'restart' or 'quit'", chars);
-      switch(displayOption){
-      case "info":
-      displayPerson(person);
-      break;
-      case "family":
-      displayFamily(people, person);
-      // TODO: get person's family
-      break;
-      case "descendants":
-      // TODO: get person's descendants
-=======
 //no switch case scenario
 function noScenarioFirstOrLastName (userAnswer, people){
   switch(userAnswer){
@@ -141,7 +122,6 @@ function noScenarioFirstOrLastName (userAnswer, people){
       return searchCriteriaBlock;
     default: 
       app(people);
->>>>>>> 259e7f679a21d197070bebc08c16d67caa95f500
       break;
   }
 }
@@ -170,45 +150,30 @@ function displayPerson(person){
   }
 }
 
-
-
 function displayFamily(people, person) {
   let result = [];
-  people.forEach(p => {
-
+  people.forEach(function(personCompare) {
     //if there is a matching spouse
-    if(person[0].currentSpouse === p.id){
-      result.push('Spouse: ' + ' '+ p.firstName + " " + p.lastName)
+    if(person[0].currentSpouse === personCompare.id){
+      result.push('Spouse: ' + ' '+ personCompare.firstName + " " + personCompare.lastName);
     }
-     
-//     //if there is anotber
-    p.parents.forEach(parent => {
-      if(person[0].currentSpouse === parent){
-       // console.log("got here>>>>>", p)
-        result.push('Parent: ' + p.firstName + " " + p.lastName)
+    //if there is a parent
+    person.forEach(function(parent) {
+      if(person[0].currentSpouse === parent.id){
+        result.push('Parent: ' + person.firstName + " " + person.lastName);
       }
-    }) 
-
-    //the person's parent
+    }); 
+    //if there is a second parent
     if(person[0].parents.length !== 0){
-      person[0].parents.forEach(y => {
-        if(y === p.id){
-          result.push('Parent: ' + p.firstName + " " + p.lastName) 
+      person[0].parents.forEach(function(parent) {
+        if(parent === person.id){
+          result.push('Parent: ' + person.firstName + " " + person.lastName); 
         } 
-      })
-
+      });
     }
-  })
-
- alert(result.join("\n")) 
-
-
-
+  });
+ alert(result.join("\n"));
 }
-
-
-
-
 
 // function that prompts and validates user input
 function promptFor(question, valid){
@@ -466,11 +431,27 @@ function calculateAge(dob) {
     }
   }
   return arrayOfAges;
-<<<<<<< HEAD
 }
 
-
-  
-=======
-}
->>>>>>> 259e7f679a21d197070bebc08c16d67caa95f500
+function descendantFinder(individualPerson, totalPeople, catchArray){
+  let descendantArray = [];
+  let filteredPeopleArray = totalPeople.filter(function(everyone){
+    return (everyone.parents.length !== 0);
+  });
+  console.log(filteredPeopleArray);
+  if (individualPerson.length !== 0){
+    for (let i = 0; i < filteredPeopleArray.length; i++){
+      for (let j = 0; j < individualPerson.length; j++){
+        if (filteredPeopleArray[i].parents.includes(individualPerson[j].id)){
+          descendantArray.push(filteredPeopleArray[i]);
+          catchArray.push(filteredPeopleArray[i]);
+        }
+      }
+    }
+  }else{
+    return catchArray;
+  }
+  console.log(descendantArray);
+  descendantFinder(descendantArray, totalPeople, catchArray);
+  return catchArray;
+} 
